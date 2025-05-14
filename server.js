@@ -2,6 +2,7 @@ import express from "express";
 import morgan from "morgan";
 import { PORT, IP, JWT_SECRET_KEY } from "./config/config.js";
 import jwt from "jsonwebtoken";
+import { verifySession } from "./middleware/verifySession.js";
 
 const app = express();
 app.use(express.json());
@@ -11,7 +12,6 @@ let users = [{ username: "Manuel", password: "12345" }];
 
 app.post("/login", (req, res) => {
   const { username, password } = req.body;
-  //   UserRepository.select(username,password)
   const found = users.find(
     (element) => element.username == username && element.password == password
   );
@@ -21,17 +21,12 @@ app.post("/login", (req, res) => {
   });
   res.json({ token });
 });
-app.listen(PORT, IP, () => {
-  console.log(`server on http://${IP}:${PORT}`);
+
+app.get("/protected", verifySession, (req, res) => {
+  const { user } = req.session;
+  res.json({ user });
 });
 
-app.get("/protected", (req, res) => {
-    const token = req.get("Authorization").split(" ")[1];
-    console.log(token)
-  try {
-    const decoded = jwt.verify(token, JWT_SECRET_KEY);
-    return res.json(decoded);
-  } catch {
-    return res.status(401).send();
-  }
+app.listen(PORT, IP, () => {
+  console.log(`server on http://${IP}:${PORT}`);
 });
