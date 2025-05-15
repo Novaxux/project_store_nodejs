@@ -5,10 +5,10 @@ import {
   signUp,
 } from "../controllers/auth.controllers.js";
 import { verifySession } from "../middleware/verifySession.js";
-const Router = express.Router();
+const router = express.Router();
 
-Router.post("/login", login);
-Router.get("/protected", verifySession, validateSession);
-Router.post("/signup", signUp);
+router.post("/login", login);
+router.get("/validateSession", verifySession, validateSession);
+router.post("/signup", signUp);
 
-export default Router;
+export default router;

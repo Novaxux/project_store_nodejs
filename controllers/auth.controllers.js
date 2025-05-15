@@ -3,6 +3,7 @@ import jwt from "jsonwebtoken";
 import { randomUUID } from "node:crypto";
 
 let users = [{ id: randomUUID(), username: "Manuel", password: "12345" }];
+
 const login = (req, res) => {
   const { username, password } = req.body;
   const found = users.find(
