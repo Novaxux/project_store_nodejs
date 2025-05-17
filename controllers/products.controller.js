@@ -1,6 +1,6 @@
 let products = [
-  { id: 1, name: 'apple', price: 2, stock: 32 },
-  { id: 2, name: 'durian', price: 3, stock: 22 },
+  { id: 1, name: 'apple', price: 2, stock: 3 },
+  { id: 2, name: 'durian', price: 3, stock: 3 },
 ];
 
 const getProducts = (req, res) => {
