@@ -4,10 +4,14 @@ import { PORT, IP } from './config/config.js';
 import authRoutes from './routes/auth.routes.js';
 import productRoutes from './routes/product.routes.js';
 import orderRoutes from './routes/order.routes.js';
+import CookieParser from 'cookie-parser';
+import cors from 'cors';
 
 const app = express();
+app.use(cors());
 app.use(express.json());
 app.use(morgan('dev'));
+app.use(CookieParser());
 app.use('/auth', authRoutes);
 app.use('/products', productRoutes);
 app.use('/order', orderRoutes);

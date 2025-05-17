@@ -14,4 +14,10 @@ const getProduct = (req, res) => {
   return res.json(product);
 };
 
-export { getProduct, getProducts, products };
+const createProduct = (req, res) => {
+  const product = req.body;
+  products.push(product);
+  res.json({message: 'product created'})
+};
+
+export { getProduct, getProducts, createProduct, products };

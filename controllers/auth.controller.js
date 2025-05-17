@@ -2,7 +2,9 @@ import { JWT_SECRET_KEY } from '../config/config.js';
 import jwt from 'jsonwebtoken';
 import { randomUUID } from 'node:crypto';
 
-let users = [{ id: randomUUID(), username: 'Manuel', password: '12345', role:'client' }];
+let users = [
+  { id: randomUUID(), username: 'Manuel', password: '12345', role: 'client' },
+];
 
 const login = (req, res) => {
   const { username, password } = req.body;
@@ -11,16 +13,25 @@ const login = (req, res) => {
   );
   // userRepository.selectUser({username})
   if (!found) return res.status(400).send();
-  const { password:_, ...userData } = found;
+  const { password: _, ...userData } = found;
   const token = jwt.sign(userData, JWT_SECRET_KEY, {
     expiresIn: '1hr',
   });
-  res.json({ token });
+  res
+    .cookie('access_token', token, {
+      httpOnly: true,
+      sameSite: 'Strict',
+      maxAge: 1000 * 60 * 60,
+    })
+    .send();
 };
 
 const validateSession = (req, res) => {
   const { user } = req.session;
   res.json({ valid: true, ...user });
+};
+const logoutUser = (req, res) => {
+  res.clearCookie('access_token').json({ message: 'logout succesfull' });
 };
 
 const signUp = (req, res) => {
@@ -32,8 +43,12 @@ const signUp = (req, res) => {
       .json({ message: `Username ${username} already exists` });
   // userRepository.insertUser({ username, password });
   const id = randomUUID();
-  users.push({ username, password, id });
+  users.push({ username, password, id, role: 'client' });
   res.json({ username, id });
 };
 
-export { login, validateSession, signUp, users };
+const getClients = (req, res) =>{
+
+}
+
+export { login, validateSession, signUp, logoutUser, users };
