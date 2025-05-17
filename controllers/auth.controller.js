@@ -1,8 +1,8 @@
-import { JWT_SECRET_KEY } from "../config/config.js";
-import jwt from "jsonwebtoken";
-import { randomUUID } from "node:crypto";
+import { JWT_SECRET_KEY } from '../config/config.js';
+import jwt from 'jsonwebtoken';
+import { randomUUID } from 'node:crypto';
 
-let users = [{ id: randomUUID(), username: "Manuel", password: "12345" }];
+let users = [{ id: randomUUID(), username: 'Manuel', password: '12345' }];
 
 const login = (req, res) => {
   const { username, password } = req.body;
@@ -13,7 +13,7 @@ const login = (req, res) => {
   if (!found) return res.status(400).send();
   const { password: _, ...userData } = found;
   const token = jwt.sign(userData, JWT_SECRET_KEY, {
-    expiresIn: "1hr",
+    expiresIn: '1hr',
   });
   res.json({ token });
 };
@@ -26,11 +26,14 @@ const validateSession = (req, res) => {
 const signUp = (req, res) => {
   const { username, password } = req.body;
   const userFound = users.find((u) => u.username === username);
-  if (userFound) return res.status(400).send();
+  if (userFound)
+    return res
+      .status(400)
+      .json({ message: `Username ${username} already exists` });
   // userRepository.insertUser({ username, password });
   const id = randomUUID();
   users.push({ username, password, id });
-  res.json({ username, password, id });
+  res.json({ username, id });
 };
 
-export { login, validateSession, signUp };
+export { login, validateSession, signUp, users };

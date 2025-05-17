@@ -1,6 +1,6 @@
 let products = [
-  { id: 2, name: "Apple", price: 2, stock: 32 },
-  { id: 2, name: "Durian", price: 3, stock: 22 },
+  { id: 1, name: 'apple', price: 2, stock: 32 },
+  { id: 2, name: 'durian', price: 3, stock: 22 },
 ];
 
 const getProducts = (req, res) => {
@@ -14,4 +14,4 @@ const getProduct = (req, res) => {
   return res.json(product);
 };
 
-export { getProduct, getProducts };
+export { getProduct, getProducts, products };
