@@ -3,13 +3,16 @@ import {
   login,
   validateSession,
   signUp,
-  logoutUser
+  logoutUser,
+  getClients,
 } from '../controllers/auth.controller.js';
-import { verifySession } from '../middleware/verifySession.js';
+import { verifyAdmin, verifySession } from '../middleware/verifySession.js';
 const router = express.Router();
 
 router.post('/login', login);
-router.get('/validateSession', verifySession, validateSession);
 router.post('/signup', signUp);
-router.post('/logout', logoutUser)
+router.post('/logout', logoutUser);
+router.use(verifySession);
+router.get('/', verifyAdmin, getClients);
+router.get('/validateSession', validateSession);
 export default router;

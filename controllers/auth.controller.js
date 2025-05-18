@@ -1,18 +1,21 @@
-import { JWT_SECRET_KEY } from '../config/config.js';
+import { JWT_SECRET_KEY, SALT_ROUNDS } from '../config/config.js';
 import jwt from 'jsonwebtoken';
 import { randomUUID } from 'node:crypto';
+import bcrypt from 'bcrypt';
 
 let users = [
-  { id: randomUUID(), username: 'Manuel', password: '12345', role: 'client' },
+  { id: randomUUID(), username: 'Manuel', password: bcrypt.hashSync('12345',2), role: 'admin' },
 ];
 
-const login = (req, res) => {
+const login = async (req, res) => {
   const { username, password } = req.body;
   const found = users.find(
-    (u) => u.username == username && u.password == password
+    (u) => u.username == username
   );
+  if (!found) return res.status(400).json({message: 'username does not exists'});
+  const validatePassword = await bcrypt.compare(password, found.password);
+  if (!validatePassword) return res.status(400).json({message: 'password is incorrect'});
   // userRepository.selectUser({username})
-  if (!found) return res.status(400).send();
   const { password: _, ...userData } = found;
   const token = jwt.sign(userData, JWT_SECRET_KEY, {
     expiresIn: '1hr',
@@ -34,7 +37,7 @@ const logoutUser = (req, res) => {
   res.clearCookie('access_token').json({ message: 'logout succesfull' });
 };
 
-const signUp = (req, res) => {
+const signUp = async (req, res) => {
   const { username, password } = req.body;
   const userFound = users.find((u) => u.username === username);
   if (userFound)
@@ -43,12 +46,13 @@ const signUp = (req, res) => {
       .json({ message: `Username ${username} already exists` });
   // userRepository.insertUser({ username, password });
   const id = randomUUID();
-  users.push({ username, password, id, role: 'client' });
+  const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS)
+  users.push({ username, password:hashedPassword, id, role: 'client' });
   res.json({ username, id });
 };
 
-const getClients = (req, res) =>{
+const getClients = (req, res) => {
+  res.json(users)
+};
 
-}
-
-export { login, validateSession, signUp, logoutUser, users };
+export { login, validateSession, signUp, logoutUser,getClients, users };
