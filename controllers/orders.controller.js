@@ -39,4 +39,10 @@ const getOrders = (req, res) => {
   res.json(orderUser);
 };
 
-export { createOrder, getOrders};
+// const getOrderDetails = (req, res) => {
+//   const orderUser = orders.filter((o) => o.idUser == req.session.user.id && o.id == req.params.id);
+//   const orderDetails =
+
+// };
+
+export { createOrder, getOrders };
