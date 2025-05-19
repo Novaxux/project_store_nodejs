@@ -1,5 +1,9 @@
 // import { randomUUID } from 'node:crypto';
-import { OrderRepository, OrderProductRepository, ProductRepository } from '../models/Repositories.js';
+import {
+  OrderRepository,
+  OrderProductRepository,
+  ProductRepository,
+} from '../models/Repositories.js';
 
 let orders = [];
 let order_product = [];
@@ -28,7 +32,7 @@ const createOrder = async (req, res) => {
       amount: element.amount,
     };
     totalPrice += newOrderProduct.price * newOrderProduct.amount;
-    OrderProductRepository.insert(newOrderProduct)
+    OrderProductRepository.insert(newOrderProduct);
     order_product.push(newOrderProduct);
   });
 
