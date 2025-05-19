@@ -24,7 +24,7 @@ CREATE TABLE orders (
  CREATE TABLE order_product(
     id_order int,
     id_product int,
-    price decimal(10,2),
+    price decimal(10,2),    
     amount int,
     FOREIGN KEY (id_order) REFERENCES orders(id),
     FOREIGN KEY (id_prodcut) REFERENCES products(id)

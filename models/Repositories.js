@@ -1,10 +1,10 @@
 import { pool } from '../config/db.js';
 export class ProductRepository {
   static select = async (id) => {
-    const product = await pool.query(`SELECT * FROM products where id = ?`, [
+    const [product] = await pool.query(`SELECT * FROM products where id = ?`, [
       id,
     ]);
-    return product[0];
+    return product;
   };
 
   static selectAll = async () => {
@@ -23,6 +23,10 @@ export class ProductRepository {
       'UPDATE products SET name = ?, price = ?, stock = ? where id = ?',
       [name, price, stock, id]
     );
+  };
+
+  static updateColumn = async (id, column, value) => {
+    await pool.query(`UPDATE products SET ${column}= ? where id = ?`, [value, id]);
   };
 }
 
@@ -57,14 +61,17 @@ export class OrderRepository {
       'INSERT INTO orders (id_user, date) VALUES (?, NOW())',
       [idUser]
     );
-    return result.insertId;
+    return result;
+  };
+  static insertTotal = async (total) => {
+    await pool.query('INSERT INTO orders (total) VALUES (?)', [total]);
   };
 }
 
 export class OrderProductRepository {
-  static insert = async ({ idUser }) => {
-    await pool.query('INSERT INTO orders (id_user, date) VALUES (?, NOW())', [
-      idUser,
+  static insert = async ( {idOrder, idProduct, price, amount} ) => {
+    await pool.query('INSERT INTO order_product (id_order, id_product, price, amount) VALUES (?, ?, ?, ?)', [
+      idOrder, idProduct, price, amount,
     ]);
   };
 }
