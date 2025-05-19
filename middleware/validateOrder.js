@@ -1,4 +1,4 @@
-import { products } from '../controllers/products.controller.js';
+import { ProductRepository } from "../models/Repositories.js";
 
 export const validateOrder = (req, res, next) => {
   const order = req.body;
@@ -17,7 +17,7 @@ export const validateOrder = (req, res, next) => {
   }
 
   for (const element of order) {
-    let productFound = products.find((p) => p.id == element.id);
+    let productFound = ProductRepository.select(id);
     if (!productFound)
       return res
         .status(404)

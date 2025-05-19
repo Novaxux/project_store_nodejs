@@ -1,4 +1,4 @@
-import { products } from './products.controller.js';
+// import { products } from './products.controller.js';
 import { randomUUID } from 'node:crypto';
 let orders = [];
 let order_product = [];

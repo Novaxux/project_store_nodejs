@@ -1,18 +1,14 @@
-import { ProductRepository } from '../models/productRepository.js';
-let products = [
-  { id: 1, name: 'apple', price: 2, stock: 3 },
-  { id: 2, name: 'durian', price: 3, stock: 3 },
-];
+import { ProductRepository } from '../models/Repositories.js';
 
 const getProducts = async (req, res) => {
-  const p = await ProductRepository.selectAllproducts();
+  const p = await ProductRepository.selectAll();
   res.json(p);
 };
 
-const getProduct = (req, res) => {
+const getProduct = async (req, res) => {
   const { id } = req.params;
-  const product = products.find((p) => p.id == id);
-  if (!product) return res.status(404).send();
+  const product = await ProductRepository.select(id);
+  if (product.length == 0) return res.status(404).send();
   return res.json(product);
 };
 
@@ -29,4 +25,4 @@ const editProduct = (req, res) => {
   res.send();
 };
 
-export { getProduct, getProducts, createProduct, editProduct, products };
+export { getProduct, getProducts, createProduct, editProduct };
