@@ -1,31 +1,34 @@
-// import { products } from './products.controller.js';
-import { randomUUID } from 'node:crypto';
+// import { randomUUID } from 'node:crypto';
+import { OrderRepository, OrderProductRepository, ProductRepository } from '../models/Repositories.js';
+
 let orders = [];
 let order_product = [];
 
-const createOrder = (req, res) => {
+const createOrder = async (req, res) => {
   const order = req.body;
   const idUser = req.session.user.id;
-  const newDate = new Date().toLocaleDateString();
+  // const newDate = new Date().toLocaleDateString();
   let totalPrice = 0;
-  const newOrder = {
-    id: randomUUID(),
-    idUser: idUser,
-    date: newDate,
-    total: null,
-  };
-  orders.push(newOrder);
+  // const newOrder = {
+  //   id: randomUUID(),
+  //   idUser: idUser,
+  //   date: newDate,
+  //   total: null,
+  // };
+  const idOrder = await OrderRepository.insert(idUser);
+  // orders.push(newOrder);
 
   order.forEach((element) => {
     let index = products.findIndex((p) => p.id == element.id);
     products[index].stock -= element.amount;
     const newOrderProduct = {
-      idOrder: newOrder.id,
+      idOrder: idOrder,
       idProduct: products[index].id,
       price: products[index].price,
       amount: element.amount,
     };
     totalPrice += newOrderProduct.price * newOrderProduct.amount;
+    OrderProductRepository.insert(newOrderProduct)
     order_product.push(newOrderProduct);
   });
 

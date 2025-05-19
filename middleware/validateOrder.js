@@ -1,6 +1,6 @@
 import { ProductRepository } from "../models/Repositories.js";
 
-export const validateOrder = (req, res, next) => {
+export const validateOrder = async (req, res, next) => {
   const order = req.body;
   // middleware
   if (!order.length > 0)
@@ -17,7 +17,7 @@ export const validateOrder = (req, res, next) => {
   }
 
   for (const element of order) {
-    let productFound = ProductRepository.select(id);
+    let productFound = await ProductRepository.select(element.id);
     if (!productFound)
       return res
         .status(404)

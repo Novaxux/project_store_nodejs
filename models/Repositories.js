@@ -1,6 +1,5 @@
 import { pool } from '../config/db.js';
 export class ProductRepository {
-  
   static select = async (id) => {
     const product = await pool.query(`SELECT * FROM products where id = ?`, [
       id,
@@ -9,8 +8,8 @@ export class ProductRepository {
   };
 
   static selectAll = async () => {
-    const result = await pool.query(`SELECT * FROM products`);
-    return result[0];
+    const [result] = await pool.query(`SELECT * FROM products`);
+    return result;
   };
   static insert = async ({ name, price, stock }) => {
     await pool.query(
@@ -43,5 +42,29 @@ export class UserRepository {
       'INSERT INTO users (id, username, password, role) VALUES (?, ?, ?, ?)',
       [id, username, password, role]
     );
+  };
+}
+
+export class OrderRepository {
+  static selectAll = async (idUser) => {
+    const result = await pool.query(`SELECT * FROM orders where id_user = ?`, [
+      idUser,
+    ]);
+    return result[0];
+  };
+  static insert = async (idUser) => {
+    const [result] = await pool.query(
+      'INSERT INTO orders (id_user, date) VALUES (?, NOW())',
+      [idUser]
+    );
+    return result.insertId;
+  };
+}
+
+export class OrderProductRepository {
+  static insert = async ({ idUser }) => {
+    await pool.query('INSERT INTO orders (id_user, date) VALUES (?, NOW())', [
+      idUser,
+    ]);
   };
 }
