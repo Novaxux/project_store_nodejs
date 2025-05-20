@@ -4,7 +4,7 @@ export class ProductRepository {
     const [product] = await pool.query(`SELECT * FROM products where id = ?`, [
       id,
     ]);
-    return product;
+    return product[0];
   };
 
   static selectAll = async () => {
@@ -56,15 +56,15 @@ export class OrderRepository {
     ]);
     return result[0];
   };
-  static insert = async (idUser) => {
+    static insert = async (idUser) => {
     const [result] = await pool.query(
       'INSERT INTO orders (id_user, date) VALUES (?, NOW())',
       [idUser]
     );
     return result;
   };
-  static insertTotal = async (total) => {
-    await pool.query('INSERT INTO orders (total) VALUES (?)', [total]);
+  static insertTotal = async (total, idOrder) => {
+    await pool.query('UPDATE  orders SET total = ? where id = ?', [total, idOrder]);
   };
 }
 
