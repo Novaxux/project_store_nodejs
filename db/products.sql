@@ -1,5 +1,5 @@
 create database  if not exists project_store;
-
+use  project_store;
 create table users(
     id varchar(50) not null primary key,
     username varchar(30) not null,

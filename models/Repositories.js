@@ -26,7 +26,10 @@ export class ProductRepository {
   };
 
   static updateColumn = async (id, column, value) => {
-    await pool.query(`UPDATE products SET ${column}= ? where id = ?`, [value, id]);
+    await pool.query(`UPDATE products SET ${column}= ? where id = ?`, [
+      value,
+      id,
+    ]);
   };
 }
 
@@ -56,7 +59,7 @@ export class OrderRepository {
     ]);
     return result[0];
   };
-    static insert = async (idUser) => {
+  static insert = async (idUser) => {
     const [result] = await pool.query(
       'INSERT INTO orders (id_user, date) VALUES (?, NOW())',
       [idUser]
@@ -64,14 +67,23 @@ export class OrderRepository {
     return result;
   };
   static insertTotal = async (total, idOrder) => {
-    await pool.query('UPDATE  orders SET total = ? where id = ?', [total, idOrder]);
+    await pool.query('UPDATE  orders SET total = ? where id = ?', [
+      total,
+      idOrder,
+    ]);
   };
 }
 
 export class OrderProductRepository {
-  static insert = async ( {idOrder, idProduct, price, amount} ) => {
-    await pool.query('INSERT INTO order_product (id_order, id_product, price, amount) VALUES (?, ?, ?, ?)', [
-      idOrder, idProduct, price, amount,
-    ]);
+  static insert = async ({ idOrder, idProduct, price, amount }) => {
+    await pool.query(
+      'INSERT INTO order_product (id_order, id_product, price, amount) VALUES (?, ?, ?, ?)',
+      [idOrder, idProduct, price, amount]
+    );
+  };
+  static select = async () => {
+    const products = await pool.query(
+      'SELECT op.*, p.name AS product_name FROM order_product op JOIN orders o ON op.id_order = o.id JOIN products p ON op.id_product = p.id WHERE o.id_user = ? ', [,idUser]
+    );
   };
 }

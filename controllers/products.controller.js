@@ -12,16 +12,24 @@ const getProduct = async (req, res) => {
   return res.json(product);
 };
 
-const createProduct = (req, res) => {
-  const { name, price, stock } = req.body;
-  ProductRepository.insert({ name, price, stock });
+const createProduct = async (req, res) => {
+  try {
+    const { name, price, stock } = req.body;
+    await ProductRepository.insert({ name, price, stock });
+  } catch (error) {
+    return res.status(400).json({ message: error.message });
+  }
   res.json({ message: 'product created' });
 };
 
-const editProduct = (req, res) => {
-  const { id } = req.params;
-  const { name, price, stock } = req.body;
-  ProductRepository.update(parseInt(id), { name, price, stock });
+const editProduct = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { name, price, stock } = req.body;
+    await ProductRepository.update(parseInt(id), { name, price, stock });
+  } catch (error) {
+    return res.status(400).json({ message: error.message });
+  }
   res.send();
 };
 
