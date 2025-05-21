@@ -41,3 +41,5 @@ BEGIN
 END$$
 
 DELIMITER ;
+ALTER TABLE products
+ADD CONSTRAINT chk_stock_min CHECK (stock >= 0);

@@ -50,10 +50,8 @@ const signUp = async (req, res) => {
     return res
       .status(400)
       .json({ message: `Username ${username} already exists` });
-  // userRepository.insertUser({ username, password });
   const id = randomUUID();
   const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
-  // users.push({ username, password:hashedPassword, id, role: 'client' });
   await UserRepository.insert({
     id,
     username,

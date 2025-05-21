@@ -1,7 +1,7 @@
 import { pool } from '../config/db.js';
 export class ProductRepository {
-  static select = async (id) => {
-    const [product] = await pool.query(`SELECT * FROM products where id = ?`, [
+  static select = async (id, conn) => {
+    const [product] = await conn.query(`SELECT * FROM products where id = ?`, [
       id,
     ]);
     return product[0];
@@ -53,15 +53,15 @@ export class OrderRepository {
     ]);
     return result[0];
   };
-  static insert = async (idUser) => {
-    const [result] = await pool.query(
+  static insert = async (idUser, conn) => {
+    const [result] = await conn.query(
       'INSERT INTO orders (id_user, date) VALUES (?, NOW())',
       [idUser]
     );
     return result;
   };
-  static insertTotal = async (total, idOrder) => {
-    await pool.query('UPDATE  orders SET total = ? where id = ?', [
+  static insertTotal = async (total, idOrder, conn) => {
+    await conn.query('UPDATE  orders SET total = ? where id = ?', [
       total,
       idOrder,
     ]);
@@ -69,8 +69,8 @@ export class OrderRepository {
 }
 
 export class OrderProductRepository {
-  static insert = async ({ idOrder, idProduct, price, amount }) => {
-    await pool.query(
+  static insert = async ({ idOrder, idProduct, price, amount }, conn) => {
+    await conn.query(
       'INSERT INTO order_product (id_order, id_product, price, amount) VALUES (?, ?, ?, ?)',
       [idOrder, idProduct, price, amount]
     );
