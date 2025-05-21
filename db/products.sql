@@ -29,3 +29,15 @@ CREATE TABLE orders (
     FOREIGN KEY (id_order) REFERENCES orders(id),
     FOREIGN KEY (id_prodcut) REFERENCES products(id)
 );
+DELIMITER $$
+
+CREATE TRIGGER reduce_product_stock
+AFTER INSERT ON order_product
+FOR EACH ROW
+BEGIN
+  UPDATE products
+  SET stock = stock - NEW.amount
+  WHERE id = NEW.id_product;
+END$$
+
+DELIMITER ;

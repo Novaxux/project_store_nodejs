@@ -25,12 +25,6 @@ export class ProductRepository {
     );
   };
 
-  static updateColumn = async (id, column, value) => {
-    await pool.query(`UPDATE products SET ${column}= ? where id = ?`, [
-      value,
-      id,
-    ]);
-  };
 }
 
 export class UserRepository {

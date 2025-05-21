@@ -13,8 +13,6 @@ const createOrder = async (req, res) => {
     const { insertId: idOrder } = await OrderRepository.insert(idUser);
     for (const element of order) {
       const product = await ProductRepository.select(element.id);
-      const newStock = product.stock - element.amount;
-      await ProductRepository.updateColumn(product.id, 'stock', newStock);
       const newOrderProduct = {
         idOrder: idOrder,
         idProduct: product.id,
