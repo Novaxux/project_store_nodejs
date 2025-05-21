@@ -24,7 +24,6 @@ export class ProductRepository {
       [name, price, stock, id]
     );
   };
-
 }
 
 export class UserRepository {
@@ -75,9 +74,20 @@ export class OrderProductRepository {
       [idOrder, idProduct, price, amount]
     );
   };
-  static select = async () => {
-    const products = await pool.query(
-      'SELECT op.*, p.name AS product_name FROM order_product op JOIN orders o ON op.id_order = o.id JOIN products p ON op.id_product = p.id WHERE o.id_user = ? ', [,idUser]
+  static select = async (idUser, idOrder) => {
+    const [products] = await pool.query(
+      `SELECT 
+        op.id_product, 
+        op.price, 
+        op.amount, 
+      p.name AS product_name
+      FROM order_product op
+      JOIN orders o ON op.id_order = o.id
+      JOIN products p ON op.id_product = p.id
+      WHERE o.id_user = ? AND o.id = ?;
+`,
+      [idUser, idOrder]
     );
+    return products;
   };
 }

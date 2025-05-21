@@ -49,11 +49,14 @@ const getOrders = async (req, res) => {
   }
 };
 
-const getOrderDetails = (req, res) => {
+const getOrderDetails = async (req, res) => {
   try {
-    const { id } = req.params;
+    const { id: idOrder } = req.params;
+    const { id: idUser } = req.session.user;
+    const products = await OrderProductRepository.select(idUser, idOrder);
+    return res.json(products);
   } catch (error) {
-    return res.status(409).json({ message: 'Duplicate entry' });
+    return res.status(500).json({ message: 'Error retrieving order details' });
   }
 };
-export { createOrder, getOrders };
+export { createOrder, getOrders, getOrderDetails };
