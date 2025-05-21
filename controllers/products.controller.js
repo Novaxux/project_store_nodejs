@@ -1,36 +1,52 @@
 import { ProductRepository } from '../models/Repositories.js';
 
 const getProducts = async (req, res) => {
-  const p = await ProductRepository.selectAll();
-  res.json(p);
+  try {
+    const products = await ProductRepository.selectAll();
+    res.json(products);
+  } catch (error) {
+    res.status(500).json({ message: 'Internal server error' });
+  }
 };
 
 const getProduct = async (req, res) => {
-  const { id } = req.params;
-  const product = await ProductRepository.select(id);
-  if (product.length == 0) return res.status(404).send();
-  return res.json(product);
+  try {
+    const { id } = req.params;
+    const product = await ProductRepository.select(id);
+    if (!product || product.length === 0)
+      return res.status(404).json({ message: 'Product not found' });
+    res.json(product);
+  } catch (error) {
+    res.status(500).json({ message: 'Internal server error' });
+  }
 };
 
 const createProduct = async (req, res) => {
   try {
     const { name, price, stock } = req.body;
     await ProductRepository.insert({ name, price, stock });
+    res.status(201).json({ message: 'Product created' });
   } catch (error) {
-    return res.status(400).json({ message: error.message });
+    res.status(400).json({ message: error.message });
   }
-  res.json({ message: 'product created' });
 };
 
 const editProduct = async (req, res) => {
   try {
     const { id } = req.params;
     const { name, price, stock } = req.body;
-    await ProductRepository.update(parseInt(id), { name, price, stock });
+    const result = await ProductRepository.update(parseInt(id), {
+      name,
+      price,
+      stock,
+    });
+    if (result.affectedRows === 0)
+      return res.status(404).json({ message: 'Product not found' });
+
+    res.status(204).send();
   } catch (error) {
-    return res.status(400).json({ message: error.message });
+    res.status(400).json({ message: error.message });
   }
-  res.send();
 };
 
 export { getProduct, getProducts, createProduct, editProduct };

@@ -33,7 +33,7 @@ const createOrder = async (req, res) => {
     return res.status(201).json({ message: 'Order created', idOrder });
   } catch (error) {
     await connection.rollback();
-    return res.status(400).json({ message: error.message });
+    return res.status(500).json({ message: 'Error creating the order' });
   } finally {
     connection.release(); // ← libera la conexión al pool
   }
@@ -43,9 +43,9 @@ const getOrders = async (req, res) => {
   try {
     const userId = req.session.user.id;
     const orders = await OrderRepository.selectAll(userId);
-    res.json(orders);
+    return res.json(orders);
   } catch (error) {
-    return res.status(400).json({ message: error.message });
+    return res.status(500).json({ message: 'Error retrieving orders' });
   }
 };
 
@@ -53,7 +53,7 @@ const getOrderDetails = (req, res) => {
   try {
     const { id } = req.params;
   } catch (error) {
-    return res.status(400).json({ message: error.message });
+    return res.status(409).json({ message: 'Duplicate entry' });
   }
 };
 export { createOrder, getOrders };

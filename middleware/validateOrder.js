@@ -1,7 +1,4 @@
-import { ProductRepository } from "../models/Repositories.js";
-import { pool } from "../config/db.js";
 export const validateOrder = async (req, res, next) => {
-  const connection = await pool.getConnection()
   const order = req.body;
   // middleware
   if (!order.length > 0)
@@ -16,18 +13,5 @@ export const validateOrder = async (req, res, next) => {
       message: 'Duplicate product IDs are not allowed in the order.',
     });
   }
-
-  for (const element of order) {
-    let productFound = await ProductRepository.select(element.id, connection);
-    if (!productFound)
-      return res
-        .status(404)
-        .json({ message: `product with id ${element.id} not found` });
-    if (productFound.stock < element.amount)
-      return res.status(409).json({
-        message: `Insufficient stock for the product ${productFound.name}, stock: ${productFound.stock}`,
-      });
-  }
-  await connection.release()
   next();
 };
