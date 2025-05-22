@@ -18,7 +18,7 @@ login.addEventListener('submit', async (e) => {
   const password = document.getElementById('password').value;
   const username = document.getElementById('username').value;
   try {
-    const response = await authRequest.loginUser({ username, password });
+    await authRequest.loginUser({ username, password });
     document.location.href = './index.html';
   } catch (error) {
     showAlert(error.message || 'An unknown error occurred');

@@ -10,7 +10,6 @@ const getProducts = async (req, res) => {
 };
 const searchProducts = async (req, res) => {
   try {
-    console.log('accediste')
     const { name } = req.query;
     if (!name) return res.status(400).json({ message: 'Missing name' });
     const products = await ProductRepository.selectByName(name);

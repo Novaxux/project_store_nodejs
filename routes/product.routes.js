@@ -13,8 +13,8 @@ router.use(verifySession);
 
 router.get('/', getProducts);
 router.post('/', verifyAdmin, createProduct);
+router.get('/search', searchProducts);
 router.get('/:id', getProduct);
 router.put('/:id', verifyAdmin, editProduct);
-router.get('/search', searchProducts);
 
 export default router;
