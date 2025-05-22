@@ -2,9 +2,8 @@ import authRequest from '../authRequest.js';
 
 document.addEventListener('DOMContentLoaded', async () => {
   try{
-    const response = await authRequest.validateSession();
-    console.log(response)
-    if (response.ok) document.location.href = './index.html';
+    await authRequest.validateSession();
+    document.location.href = './index.html';
   }catch(error){
     console.error('Session not valid')
   }

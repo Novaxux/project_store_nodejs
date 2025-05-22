@@ -32,8 +32,8 @@ const getProduct = async (req, res) => {
 
 const createProduct = async (req, res) => {
   try {
-    const { name, price, stock } = req.body;
-    await ProductRepository.insert({ name, price, stock });
+    const { name, price, stock, image } = req.body;
+    await ProductRepository.insert({ name, price, stock, image });
     res.status(201).json({ message: 'Product created' });
   } catch (error) {
     res.status(400).json({ message: error.message });
@@ -43,11 +43,12 @@ const createProduct = async (req, res) => {
 const editProduct = async (req, res) => {
   try {
     const { id } = req.params;
-    const { name, price, stock } = req.body;
+    const { name, price, stock, image } = req.body;
     const result = await ProductRepository.update(parseInt(id), {
       name,
       price,
       stock,
+      image,
     });
     if (result.affectedRows === 0)
       return res.status(404).json({ message: 'Product not found' });

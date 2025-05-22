@@ -31,7 +31,7 @@ const login = async (req, res) => {
 
 const validateSession = (req, res) => {
   const { user } = req.session;
-  res.json({ user });
+  res.json(user);
 };
 const logoutUser = (req, res) => {
   res.clearCookie('access_token').json({ message: 'logout succesfull' });

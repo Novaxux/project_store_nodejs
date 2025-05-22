@@ -10,10 +10,10 @@ export class ProductRepository {
     const [result] = await pool.query(`SELECT * FROM products`);
     return result;
   };
-  static insert = async ({ name, price, stock }) => {
+  static insert = async ({ name, price, stock, image }) => {
     await pool.query(
-      'INSERT INTO products (name, price, stock) VALUES (?, ?, ?)',
-      [name, price, stock]
+      'INSERT INTO products (name, price, stock, image) VALUES (?, ?, ?, ?)',
+      [name, price, stock, image]
     );
   };
   static selectByName = async (name) => {
@@ -24,10 +24,10 @@ export class ProductRepository {
     return products;
   };
   // receive as an object to avoid unordened inserting
-  static update = async (id, { name, price, stock }) => {
+  static update = async (id, { name, price, stock, image }) => {
     await pool.query(
-      'UPDATE products SET name = ?, price = ?, stock = ? where id = ?',
-      [name, price, stock, id]
+      'UPDATE products SET name = ?, price = ?, stock = ?, image = ? where id = ?',
+      [name, price, stock, id, image]
     );
   };
 }

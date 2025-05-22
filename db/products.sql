@@ -10,6 +10,7 @@ create table users(
 create table products(
 	id INT NOT NULL AUTO_INCREMENT,
 	name varchar(30) not null,
+	image varchar(255) not null,
 	price decimal(10,2) not null,
 	stock int(6) not null,
     primary key(id)
