@@ -4,7 +4,9 @@ class ApiCalls {
   }
 
   getAllProducts = async () => {
-    const response = await fetch(`${this.baseUrl}/products`);
+    const response = await fetch(`${this.baseUrl}/products`, {
+      credentials: 'include',
+    });
     const data = await response.json();
     if (!response.ok) {
       throw data;
@@ -15,6 +17,7 @@ class ApiCalls {
   deleteProduct = async (id) => {
     const response = await fetch(`${this.baseUrl}/products/${id}`, {
       method: 'DELETE',
+      credentials: 'include',
     });
     const data = await response.json();
     if (!response.ok) {
@@ -29,6 +32,7 @@ class ApiCalls {
   editProduct = async (params) => {
     const response = await fetch(`${this.baseUrl}/products/${params.id}`, {
       method: 'PATCH',
+      credentials: 'include',
       body: JSON.stringify(params),
       headers: {
         'Content-type': 'application/json; charset=UTF-8',
@@ -42,7 +46,9 @@ class ApiCalls {
   };
 
   getProduct = async (id) => {
-    const response = await fetch(`${this.baseUrl}/products/${id}`);
+    const response = await fetch(`${this.baseUrl}/products/${id}`, {
+      credentials: 'include',
+    });
     const data = await response.json();
     if (!response.ok) {
       throw data;
@@ -53,6 +59,7 @@ class ApiCalls {
   postProduct = async (params) => {
     const response = await fetch(`${this.baseUrl}/products`, {
       method: 'POST',
+      credentials: 'include',
       body: JSON.stringify(params),
       headers: {
         'Content-type': 'application/json; charset=UTF-8',
@@ -66,5 +73,5 @@ class ApiCalls {
   };
 }
 
-export const api = new ApiCalls();
-export { ApiCalls };
+const api = new ApiCalls();
+export default api;

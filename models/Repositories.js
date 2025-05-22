@@ -25,10 +25,11 @@ export class ProductRepository {
   };
   // receive as an object to avoid unordened inserting
   static update = async (id, { name, price, stock, image }) => {
-    await pool.query(
+    const product = await pool.query(
       'UPDATE products SET name = ?, price = ?, stock = ?, image = ? where id = ?',
-      [name, price, stock, id, image]
+      [name, price, stock, image, id]
     );
+    return product;
   };
 }
 

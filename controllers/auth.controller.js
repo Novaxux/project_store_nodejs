@@ -53,7 +53,7 @@ const signUp = async (req, res) => {
       password: hashedPassword,
       role: 'client',
     });
-    res.json({ username, id });
+    res.json({ message: "Signup succesful"});
   } catch (error) {
     return res.json({ message: error.message });
   }

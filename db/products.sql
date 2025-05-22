@@ -44,3 +44,15 @@ END$$
 DELIMITER ;
 ALTER TABLE products
 ADD CONSTRAINT chk_stock_min CHECK (stock >= 0);
+
+INSERT INTO products (name, price, stock, image) VALUES
+('Apple', 4.88, 123, 'https://www.applesfromny.com/wp-content/uploads/2020/05/20Ounce_NYAS-Apples2.png'),
+('Banana', 2.30, 200, 'https://upload.wikimedia.org/wikipedia/commons/8/8a/Banana-Single.jpg'),
+('Orange', 3.25, 150, 'https://upload.wikimedia.org/wikipedia/commons/c/c4/Orange-Fruit-Pieces.jpg'),
+('Grapes', 5.10, 100, 'https://upload.wikimedia.org/wikipedia/commons/b/bb/Table_grapes_on_white.jpg'),
+('Pineapple', 6.75, 60, 'https://upload.wikimedia.org/wikipedia/commons/c/cb/Pineapple_and_cross_section.jpg'),
+('Strawberry', 4.99, 90, 'https://upload.wikimedia.org/wikipedia/commons/2/29/PerfectStrawberry.jpg'),
+('Kiwi', 3.40, 75, 'https://upload.wikimedia.org/wikipedia/commons/d/d3/Kiwi_aka.jpg'),
+('Mango', 4.50, 80, 'https://upload.wikimedia.org/wikipedia/commons/9/90/Hapus_Mango.jpg'),
+('Tomato', 2.99, 130, 'https://upload.wikimedia.org/wikipedia/commons/8/89/Tomato_je.jpg');
+
