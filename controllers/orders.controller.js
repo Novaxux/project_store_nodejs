@@ -33,7 +33,7 @@ const createOrder = async (req, res) => {
     return res.status(201).json({ message: 'Order created', idOrder });
   } catch (error) {
     await connection.rollback();
-    return res.status(400).json({ message: error.message });
+    return res.status(500).json({ message: 'Error creating the order' });
   } finally {
     connection.release(); // ← libera la conexión al pool
   }
@@ -43,17 +43,20 @@ const getOrders = async (req, res) => {
   try {
     const userId = req.session.user.id;
     const orders = await OrderRepository.selectAll(userId);
-    res.json(orders);
+    return res.json(orders);
   } catch (error) {
-    return res.status(400).json({ message: error.message });
+    return res.status(500).json({ message: 'Error retrieving orders' });
   }
 };
 
-const getOrderDetails = (req, res) => {
+const getOrderDetails = async (req, res) => {
   try {
-    const { id } = req.params;
+    const { id: idOrder } = req.params;
+    const { id: idUser } = req.session.user;
+    const products = await OrderProductRepository.select(idUser, idOrder);
+    return res.json(products);
   } catch (error) {
-    return res.status(400).json({ message: error.message });
+    return res.status(500).json({ message: 'Error retrieving order details' });
   }
 };
-export { createOrder, getOrders };
+export { createOrder, getOrders, getOrderDetails };

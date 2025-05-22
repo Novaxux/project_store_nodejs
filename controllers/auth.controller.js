@@ -4,66 +4,68 @@ import { randomUUID } from 'node:crypto';
 import bcrypt from 'bcrypt';
 import { UserRepository } from '../models/Repositories.js';
 
-let users = [
-  {
-    id: randomUUID(),
-    username: 'Manuel',
-    password: bcrypt.hashSync('12345', 2),
-    role: 'admin',
-  },
-];
-
 const login = async (req, res) => {
-  const { username, password } = req.body;
-  const found = await UserRepository.select(username);
-  if (!found)
-    return res.status(400).json({ message: 'username does not exists' });
-  const validatePassword = await bcrypt.compare(password, found.password);
-  if (!validatePassword)
-    return res.status(400).json({ message: 'password is incorrect' });
-  const { password: _, ...userData } = found;
-  const token = jwt.sign(userData, JWT_SECRET_KEY, {
-    expiresIn: '1hr',
-  });
-  res
-    .cookie('access_token', token, {
-      httpOnly: true,
-      sameSite: 'Strict',
-      maxAge: 1000 * 60 * 60,
-    })
-    .send();
+  try {
+    const { username, password } = req.body;
+    const found = await UserRepository.select(username);
+    if (found.length === 0)
+      return res.status(400).json({ message: 'username does not exists' });
+    const validatePassword = await bcrypt.compare(password, found.password);
+    if (!validatePassword)
+      return res.status(400).json({ message: 'password is incorrect' });
+    const { password: _, ...userData } = found;
+    const token = jwt.sign(userData, JWT_SECRET_KEY, {
+      expiresIn: '1hr',
+    });
+    res
+      .cookie('access_token', token, {
+        httpOnly: true,
+        sameSite: 'Strict',
+        maxAge: 1000 * 60 * 60,
+      })
+      .json(userData);
+  } catch (error) {
+    res.json({ message: error.message });
+  }
 };
 
 const validateSession = (req, res) => {
   const { user } = req.session;
-  res.json({ valid: true, ...user });
+  res.json({ user });
 };
 const logoutUser = (req, res) => {
   res.clearCookie('access_token').json({ message: 'logout succesfull' });
 };
 
 const signUp = async (req, res) => {
-  const { username, password } = req.body;
-  const userFound = await UserRepository.select(username);
-  console.log(userFound)
-  if (userFound)
-    return res
-      .status(400)
-      .json({ message: `Username ${username} already exists` });
-  const id = randomUUID();
-  const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
-  await UserRepository.insert({
-    id,
-    username,
-    password: hashedPassword,
-    role: 'client'
-  });
-  res.json({message: 'Sign up succesful'});
+  try {
+    const { username, password } = req.body;
+    const userFound = await UserRepository.select(username);
+    if (userFound)
+      return res
+        .status(400)
+        .json({ message: `Username ${username} already exists` });
+    const id = randomUUID();
+    const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
+    await UserRepository.insert({
+      id,
+      username,
+      password: hashedPassword,
+      role: 'client',
+    });
+    res.json({ username, id });
+  } catch (error) {
+    return res.json({ message: error.message });
+  }
 };
 
 const getClients = async (req, res) => {
-  const _users = await UserRepository.selectAll();
-  res.json(_users);
+  try {
+    const _users = await UserRepository.selectAll();
+    return res.json(_users);
+  } catch {
+    return res.status(500);
+  }
 };
 
-export { login, validateSession, signUp, logoutUser, getClients, users };
+export { login, validateSession, signUp, logoutUser, getClients };
