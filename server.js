@@ -1,6 +1,6 @@
 import express from 'express';
 import morgan from 'morgan';
-import { PORT, IP } from './config/config.js';
+import { PORT, IP, CORS_ORIGIN } from './config/config.js';
 import authRoutes from './routes/auth.routes.js';
 import productRoutes from './routes/product.routes.js';
 import orderRoutes from './routes/order.routes.js';
@@ -8,7 +8,12 @@ import CookieParser from 'cookie-parser';
 import cors from 'cors';
 
 const app = express();
-app.use(cors());
+app.use(
+  cors({
+    origin: CORS_ORIGIN,
+    credentials: true,
+  })
+);
 app.use(express.json());
 app.use(morgan('dev'));
 app.use(CookieParser());

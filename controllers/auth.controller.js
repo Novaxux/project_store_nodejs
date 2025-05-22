@@ -16,7 +16,7 @@ let users = [
 const login = async (req, res) => {
   const { username, password } = req.body;
   const found = await UserRepository.select(username);
-  if (found.length === 0)
+  if (!found)
     return res.status(400).json({ message: 'username does not exists' });
   const validatePassword = await bcrypt.compare(password, found.password);
   if (!validatePassword)
@@ -31,7 +31,7 @@ const login = async (req, res) => {
       sameSite: 'Strict',
       maxAge: 1000 * 60 * 60,
     })
-    .json(userData);
+    .send();
 };
 
 const validateSession = (req, res) => {
@@ -58,7 +58,7 @@ const signUp = async (req, res) => {
     password: hashedPassword,
     role: 'client'
   });
-  res.json({ username, id });
+  res.json({message: 'Sign up succesful'});
 };
 
 const getClients = async (req, res) => {
