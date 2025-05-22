@@ -6,7 +6,6 @@ export class ProductRepository {
     ]);
     return product[0];
   };
-
   static selectAll = async () => {
     const [result] = await pool.query(`SELECT * FROM products`);
     return result;
@@ -16,6 +15,13 @@ export class ProductRepository {
       'INSERT INTO products (name, price, stock) VALUES (?, ?, ?)',
       [name, price, stock]
     );
+  };
+  static selectByName = async (name) => {
+    const [products] = await pool.query(
+      `SELECT * FROM products WHERE name LIKE ?`,
+      [`%${name}%`]
+    );
+    return products;
   };
   // receive as an object to avoid unordened inserting
   static update = async (id, { name, price, stock }) => {

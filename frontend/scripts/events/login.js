@@ -1,8 +1,13 @@
 import authRequest from '../authRequest.js';
 
 document.addEventListener('DOMContentLoaded', async () => {
-  const response = await authRequest.validateSession();
-  if (response) document.location.href = './index.html';
+  try{
+    const response = await authRequest.validateSession();
+    console.log(response)
+    if (response.ok) document.location.href = './index.html';
+  }catch(error){
+    console.error('Session not valid')
+  }
 });
 
 const login = document.getElementById('login');
@@ -14,10 +19,8 @@ login.addEventListener('submit', async (e) => {
   const username = document.getElementById('username').value;
   try {
     const response = await authRequest.loginUser({ username, password });
-    console.log(response)
     document.location.href = './index.html';
   } catch (error) {
-    console.log(error.message)
     showAlert(error.message || 'An unknown error occurred');
   }
 });
@@ -27,7 +30,7 @@ signUp.addEventListener('submit', async (e) => {
   const username = document.getElementById('suUsername').value;
   try {
     const data = await authRequest.signup({ username, password });
-    alert(data.message);
+    showAlert(data.message);
   } catch (error) {
     showAlert(error.message || 'An unknown error occurred');
   }

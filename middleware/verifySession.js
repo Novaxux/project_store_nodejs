@@ -9,7 +9,7 @@ export const verifySession = (req, res, next) => {
     const decoded = jwt.verify(token, JWT_SECRET_KEY);
     req.session.user = decoded;
   } catch {
-    return res.status(401).send();
+    return res.status(401).json({message: 'session not valid'});
   }
   next();
 };

@@ -8,7 +8,17 @@ const getProducts = async (req, res) => {
     res.status(500).json({ message: 'Internal server error' });
   }
 };
-
+const searchProducts = async (req, res) => {
+  try {
+    console.log('accediste')
+    const { name } = req.query;
+    if (!name) return res.status(400).json({ message: 'Missing name' });
+    const products = await ProductRepository.selectByName(name);
+    res.json(products);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
 const getProduct = async (req, res) => {
   try {
     const { id } = req.params;
@@ -49,4 +59,4 @@ const editProduct = async (req, res) => {
   }
 };
 
-export { getProduct, getProducts, createProduct, editProduct };
+export { getProduct, getProducts, createProduct, editProduct, searchProducts };
