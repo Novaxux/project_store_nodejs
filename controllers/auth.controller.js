@@ -8,7 +8,7 @@ const login = async (req, res) => {
   try {
     const { username, password } = req.body;
     const found = await UserRepository.select(username);
-    if (found.length === 0)
+    if (!found)
       return res.status(400).json({ message: 'username does not exists' });
     const validatePassword = await bcrypt.compare(password, found.password);
     if (!validatePassword)
@@ -25,7 +25,7 @@ const login = async (req, res) => {
       })
       .json(userData);
   } catch (error) {
-    res.json({ message: error.message });
+    return res.json({ message: error.message });
   }
 };
 

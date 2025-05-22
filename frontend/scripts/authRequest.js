@@ -24,7 +24,7 @@ class AuthRequest {
   };
 
   validateSession = async () => {
-    const response = await fetch(this.baseUrl + '/validate', {
+    const response = await fetch(this.baseUrl + '/validateSession', {
       credentials: 'include',
     });
     const data = await response.json();
