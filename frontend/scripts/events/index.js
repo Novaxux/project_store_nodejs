@@ -1,12 +1,14 @@
 import authRequest from '../authRequest.js';
 import api from '../apiCalls.js';
 import { ProductCard } from '../components/productCard.js';
+import { cartItem } from '../components/cartItem.js';
+import { modal } from '../components/modal.js';
 
 const btnLogout = document.getElementById('logout');
 const cartArticles = document.getElementById('cart-articles');
-// const formSearch = document.getElementById('formSearch');
 const inputSearch = document.getElementById('inputSearch');
-
+const productContainer = document.getElementById('product-container');
+const cartBtn = document.getElementById('cartBtn');
 
 window.cart = [];
 window.username = ''; // Declarar username como global
@@ -24,17 +26,11 @@ document.addEventListener(
       if (usernameSpan) usernameSpan.innerHTML = username;
 
       window.cart = loadCart(username);
-      generateAllProducts()
-      // if (cartArticles) {
-      //   cartArticles.innerHTML = updateArticles();
-      // }
-      // const products = await api.getAllProducts();
-      // const productContainer = document.getElementById('product-container');
-      // if (productContainer) {
-      //   for (const product of products) {
-      //     productContainer.innerHTML += ProductCard(product);
-      //   }
-      // }
+      if (cartArticles) {
+        cartArticles.innerHTML = updateArticles();
+      }
+
+      generateAllProducts();
     } catch (error) {
       console.error('Auth failed or another error occurred:', error);
       document.location.href = './login.html';
@@ -42,13 +38,10 @@ document.addEventListener(
   },
   { once: true }
 );
-async function generateAllProducts (){
-  if (cartArticles) {
-    cartArticles.innerHTML = updateArticles();
-  }
+async function generateAllProducts() {
   const products = await api.getAllProducts();
-  const productContainer = document.getElementById('product-container');
   if (productContainer) {
+    productContainer.innerHTML = '';
     for (const product of products) {
       productContainer.innerHTML += ProductCard(product);
     }
@@ -83,20 +76,36 @@ window.addToCart = function (id) {
   localStorage.setItem(`cart_${username}`, JSON.stringify(cart));
   cartArticles.innerHTML = updateArticles();
 };
+window.removeFromCart = function (id) {
+  const newCart = cart.filter((product) => product.id != id);
+  cart = newCart;
+  localStorage.setItem('cart_' + username, JSON.stringify(cart));
+  loadItems();
+  cartArticles.innerHTML = updateArticles();
+};
 
+// buttons
 btnLogout.addEventListener('click', async () => {
   await authRequest.logout();
   localStorage.removeItem(`cart_${username}`);
   location.href = './login.html';
 });
-
+cartBtn.addEventListener('click', async () => {
+  await loadItems();
+});
+async function loadItems() {
+  productContainer.innerHTML = '';
+  for (const { id, amount } of cart) {
+    const product = await api.getProduct(id);
+    productContainer.innerHTML += cartItem(product, amount);
+  }
+}
 inputSearch.addEventListener('keyup', async (e) => {
   e.preventDefault();
   const name = document.getElementById('inputSearch').value.trim();
-  if (name.length == 0) return generateAllProducts()
+  if (name.length == 0) return generateAllProducts();
   try {
     const products = await api.searchProduct(name);
-    const productContainer = document.getElementById('product-container');
     if (productContainer) {
       productContainer.innerHTML = '';
       for (const product of products) {

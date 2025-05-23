@@ -51,14 +51,14 @@
                 <label for="suUsername" class="form-label">Username</label>
                 <div class="input-group">
                   <span class="input-group-text"><i class="bi bi-person-fill"></i></span>
-                  <input type="text" class="form-control" id="suUsername" name="username" required placeholder="Choose username">
+                  <input type="text" class="form-control" id="suUsername" name="username" minlength="6" required placeholder="Choose username">
                 </div>
               </div>
               <div class="mb-3">
                 <label for="suPassword" class="form-label">Password</label>
                 <div class="input-group">
                   <span class="input-group-text"><i class="bi bi-lock-fill"></i></span>
-                  <input type="password" class="form-control" id="suPassword" name="password" required placeholder="Choose password">
+                  <input type="password" class="form-control" id="suPassword" name="password" minlength="8" required placeholder="Choose password">
                 </div>
               </div>
               <button type="submit" class="btn btn-success w-100">
@@ -72,20 +72,6 @@
   </div>
   <!-- Modal Alert -->
 <div class="modal fade" id="alertModal" tabindex="-1" aria-labelledby="alertModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="alertModalLabel">Alert</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body" id="alertModalBody">
-          <!-- Aquí irá el mensaje de error -->
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-primary" data-bs-dismiss="modal">OK</button>
-        </div>
-      </div>
-    </div>
   </div>
   
   <!-- Bootstrap JS -->

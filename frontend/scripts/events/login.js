@@ -1,6 +1,7 @@
 import authRequest from '../authRequest.js';
-
+import { modal } from '../components/modal.js';
 document.addEventListener('DOMContentLoaded', async () => {
+  document.getElementById('alertModal').innerHTML = modal()
   try{
     await authRequest.validateSession();
     document.location.href = './index.html';
@@ -37,7 +38,7 @@ signUp.addEventListener('submit', async (e) => {
   }
 });
 
-function showAlert(message) {
+export function showAlert(message) {
   const modalBody = document.getElementById('alertModalBody');
   modalBody.textContent = message;
 

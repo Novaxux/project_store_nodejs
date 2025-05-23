@@ -1,5 +1,5 @@
 import { ProductRepository } from '../models/Repositories.js';
-
+import { pool } from '../config/db.js';
 const getProducts = async (req, res) => {
   try {
     const products = await ProductRepository.selectAll();
@@ -19,15 +19,18 @@ const searchProducts = async (req, res) => {
   }
 };
 const getProduct = async (req, res) => {
+  const connection = await pool.getConnection()
   try {
     const { id } = req.params;
-    const product = await ProductRepository.select(id);
+    const product = await ProductRepository.select(id, connection);
     if (!product || product.length === 0)
       return res.status(404).json({ message: 'Product not found' });
     res.json(product);
   } catch (error) {
     res.status(500).json({ message: 'Internal server error' });
-  }
+  }finally{
+    connection.release()
+  } 
 };
 
 const createProduct = async (req, res) => {
