@@ -55,7 +55,16 @@ class ApiCalls {
     }
     return data;
   };
-
+  searchProduct = async (name) => {
+    const response = await fetch(`${this.baseUrl}/products/search?name=${name}`, {
+      credentials: 'include',
+    });
+    const data = await response.json();
+    if (!response.ok) {
+      throw data;
+    }
+    return data;
+  };
   postProduct = async (params) => {
     const response = await fetch(`${this.baseUrl}/products`, {
       method: 'POST',
