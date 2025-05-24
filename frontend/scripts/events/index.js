@@ -5,7 +5,8 @@ import { ProductCard } from '../components/productCard.js';
 import { cartItem } from '../components/cartItem.js';
 import { showToast, toast } from '../components/toast.js';
 import { modal, showAlert, showConfirm } from '../components/modal.js';
-import { OrderDetailCard } from '../components/orderDetailCard.js';
+import { orderCard } from '../components/orderCard.js';
+import { orderDetails } from '../components/orderDetails.js';
 
 // Referencias a elementos del DOM
 const btnLogout = document.getElementById('logout');
@@ -84,7 +85,7 @@ window.addToCart = function (id) {
 
   saveCart();
   updateCartDisplay(false);
-  showToast('Product added');
+  showToast('Product added', 'info');
 };
 
 // Elimina un producto del carrito
@@ -94,7 +95,7 @@ window.removeFromCart = function (id) {
     saveCart();
     loadItems();
     updateCartDisplay();
-    showToast('Item removed', 'secondary');
+    showToast('Item removed', 'warning');
     sumTotalItems();
   });
 };
@@ -164,11 +165,10 @@ acceptOrder.addEventListener('click', async () => {
 async function sendOrder() {
   try {
     const data = await api.postOrder(cart);
-    console.log(data);
     cart = [];
     saveCart();
     productContainer.innerHTML = '';
-    showToast(data.message, 'info');
+    showToast(data.message);
     updateCartDisplay();
   } catch (error) {
     showToast(error.message, 'danger');
@@ -178,6 +178,7 @@ async function sendOrder() {
 // Búsqueda de productos
 inputSearch.addEventListener('keyup', async (e) => {
   e.preventDefault();
+  orderContainer.innerHTML = '';
   const name = inputSearch.value.trim();
   if (!name) return generateAllProducts();
 
@@ -192,7 +193,6 @@ inputSearch.addEventListener('keyup', async (e) => {
 // Botón de cerrar sesión
 btnLogout.addEventListener('click', async () => {
   await authRequest.logout();
-  localStorage.removeItem(`cart_${username}`);
   location.href = './login.html';
 });
 
@@ -203,8 +203,8 @@ cartBtn.addEventListener('click', async () => {
     await loadItems();
     updateCartDisplay();
     await sumTotalItems();
-  } catch(error) {
-    console.log(error.message)
+  } catch (error) {
+    console.log(error.message);
     cart = [];
     saveCart();
     updateCartDisplay();
@@ -227,9 +227,16 @@ index.addEventListener('click', async () => {
 btnOrders.addEventListener('click', async () => {
   try {
     const orders = await api.getOrders();
-    orderContainer.innerHTML = orders.map(OrderDetailCard).join('');
+    orderContainer.innerHTML = orders.map(orderCard).join('');
     productContainer.innerHTML = '';
+    summarySection.hidden = true;
   } catch (error) {
     showToast(error.message, 'danger');
   }
 });
+
+window.showOrderDetails =async function (id) {
+  const orderDetailsContainer  =document.getElementById('orderDetails'+id)
+  const details = await api.getOrderDetails(id);
+  orderDetailsContainer.innerHTML= details.map(orderDetails).join("")
+};

@@ -1,18 +1,18 @@
 create database  if not exists project_store;
 use  project_store;
 create table users(
-    id varchar(50) not null primary key,
-    username varchar(30) not null,
-    password varchar(30) not null,
-    role varchar(10) not null
+    id varchar(50) NOT NULL primary key,
+    username varchar(30) NOT NULL,
+    password varchar(30) NOT NULL,
+    role varchar(10) NOT NULL
 );
 
 create table products(
 	id INT NOT NULL AUTO_INCREMENT,
-	name varchar(30) not null,
-	image varchar(255) not null,
-	price decimal(10,2) not null,
-	stock int(6) not null,
+	name varchar(30) NOT NULL,
+	image varchar(255) NOT NULL,
+	price decimal(10,2) NOT NULL,
+	stock int(6) NOT NULL,
     primary key(id)
 );
 CREATE TABLE orders (
@@ -23,10 +23,10 @@ CREATE TABLE orders (
   FOREIGN KEY (id_user) REFERENCES users(id)
 );
  CREATE TABLE order_product(
-    id_order int,
-    id_product int,
-    price decimal(10,2),    
-    amount int,
+    id_order int NOT NULL,
+    id_product int NOT NULL,
+    price decimal(10,2) NOT NULL,    
+    amount int NOT NULL,
     FOREIGN KEY (id_order) REFERENCES orders(id),
     FOREIGN KEY (id_prodcut) REFERENCES products(id)
 );

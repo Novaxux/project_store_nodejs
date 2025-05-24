@@ -84,7 +84,7 @@ class ApiCalls {
     return data;
   };
   getOrderDetails = async (id) => {
-    const response = await fetch(`${this.baseUrl}/orders/${id}`, {
+    const response = await fetch(`${this.baseUrl}/order/${id}`, {
       credentials: 'include',
     });
     const data = await response.json();
