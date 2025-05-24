@@ -1,9 +1,8 @@
 import authRequest from '../authRequest.js';
-import { modal } from '../components/modal.js';
-import { showAlert } from '../components/modal.js';
+import { toast, showToast } from '../components/toast.js';
 
 document.addEventListener('DOMContentLoaded', async () => {
-  document.body.insertAdjacentHTML('beforeend', modal());
+  document.body.insertAdjacentHTML('beforeend', toast());
   try{
     await authRequest.validateSession();
     document.location.href = './index.html';
@@ -23,7 +22,7 @@ login.addEventListener('submit', async (e) => {
     await authRequest.loginUser({ username, password });
     document.location.href = './index.html';
   } catch (error) {
-    showAlert(error.message || 'An unknown error occurred');
+    showToast(error.message || 'An unknown error occurred', 'danger');
   }
 });
 signUp.addEventListener('submit', async (e) => {
@@ -32,11 +31,11 @@ signUp.addEventListener('submit', async (e) => {
   const username = document.getElementById('suUsername').value.trim();
   try {
     const data = await authRequest.signup({ username, password });
-    showAlert(data.message);
+    showToast(data.message, 'info');
     clearInput('suPassword')
     clearInput('suUsername')
   } catch (error) {
-    showAlert(error.message || 'An unknown error occurred');
+    showToast(error.message || 'An unknown error occurred', 'danger');
   }
 });
 
