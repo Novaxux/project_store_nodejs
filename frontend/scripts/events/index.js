@@ -4,7 +4,8 @@ import api from '../apiCalls.js';
 import { ProductCard } from '../components/productCard.js';
 import { cartItem } from '../components/cartItem.js';
 import { showToast, toast } from '../components/toast.js';
-import { modal, showConfirm } from '../components/modal.js';
+import { modal, showAlert, showConfirm } from '../components/modal.js';
+import { OrderDetailCard } from '../components/orderDetailCard.js';
 
 // Referencias a elementos del DOM
 const btnLogout = document.getElementById('logout');
@@ -16,7 +17,8 @@ const messageContainer = document.getElementById('main-container-message');
 const summarySection = document.getElementById('summarySection');
 const index = document.getElementById('index');
 const acceptOrder = document.getElementById('accept-btn');
-const btnOrders = document.getElementById('getOrders')
+const btnOrders = document.getElementById('getOrders');
+const orderContainer = document.getElementById('order-container');
 
 // Variables globales
 window.cart = [];
@@ -160,16 +162,16 @@ acceptOrder.addEventListener('click', async () => {
 
 // Enviar pedido
 async function sendOrder() {
-  try{
-  const data = await api.postOrder(cart)
-  console.log(data)
-  cart =[]
-  saveCart();
-  productContainer.innerHTML=''
-  showToast(data.message, 'info');
-  updateCartDisplay();
-  }catch(error){
-    showToast(error.message, 'danger')
+  try {
+    const data = await api.postOrder(cart);
+    console.log(data);
+    cart = [];
+    saveCart();
+    productContainer.innerHTML = '';
+    showToast(data.message, 'info');
+    updateCartDisplay();
+  } catch (error) {
+    showToast(error.message, 'danger');
   }
 }
 
@@ -196,30 +198,38 @@ btnLogout.addEventListener('click', async () => {
 
 // Botón para ver el carrito
 cartBtn.addEventListener('click', async () => {
-  try{
-  await loadItems();
-  updateCartDisplay();
-  await sumTotalItems();
-  }catch{
-    cart=[]
-    saveCart()
-    updateCartDisplay()
+  orderContainer.innerHTML = '';
+  try {
+    await loadItems();
+    updateCartDisplay();
+    await sumTotalItems();
+  } catch(error) {
+    console.log(error.message)
+    cart = [];
+    saveCart();
+    updateCartDisplay();
   }
 });
 
 // Botón para volver al índice
 index.addEventListener('click', async () => {
-  await generateAllProducts();
-  messageContainer.hidden = true;
-  summarySection.hidden = true;
+  orderContainer.innerHTML = '';
+  try {
+    await generateAllProducts();
+    messageContainer.hidden = true;
+    summarySection.hidden = true;
+  } catch (error) {
+    showAlert(error.message, 'danger');
+  }
 });
 
 //cargar ordenes
 btnOrders.addEventListener('click', async () => {
-  try{
-    const data = await api.getOrders()
-    console.log(data)
-  }catch(error){
-    showToast(error.message, 'danger')
+  try {
+    const orders = await api.getOrders();
+    orderContainer.innerHTML = orders.map(OrderDetailCard).join('');
+    productContainer.innerHTML = '';
+  } catch (error) {
+    showToast(error.message, 'danger');
   }
-})
+});
