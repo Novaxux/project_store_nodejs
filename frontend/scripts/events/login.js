@@ -1,7 +1,9 @@
 import authRequest from '../authRequest.js';
 import { modal } from '../components/modal.js';
+import { showAlert } from '../components/modal.js';
+
 document.addEventListener('DOMContentLoaded', async () => {
-  document.getElementById('alertModal').innerHTML = modal()
+  document.body.insertAdjacentHTML('beforeend', modal());
   try{
     await authRequest.validateSession();
     document.location.href = './index.html';
@@ -37,14 +39,6 @@ signUp.addEventListener('submit', async (e) => {
     showAlert(error.message || 'An unknown error occurred');
   }
 });
-
-export function showAlert(message) {
-  const modalBody = document.getElementById('alertModalBody');
-  modalBody.textContent = message;
-
-  const alertModal = new bootstrap.Modal(document.getElementById('alertModal'));
-  alertModal.show();
-}
 
 function clearInput(element){
     document.getElementById(element).value = ''

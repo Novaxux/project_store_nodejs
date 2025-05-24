@@ -2,20 +2,25 @@ import authRequest from '../authRequest.js';
 import api from '../apiCalls.js';
 import { ProductCard } from '../components/productCard.js';
 import { cartItem } from '../components/cartItem.js';
-import { modal } from '../components/modal.js';
+import { showToast, toast } from '../components/toast.js';
+import { modal, showConfirm } from '../components/modal.js';
 
 const btnLogout = document.getElementById('logout');
 const cartArticles = document.getElementById('cart-articles');
 const inputSearch = document.getElementById('inputSearch');
 const productContainer = document.getElementById('product-container');
 const cartBtn = document.getElementById('cartBtn');
-
+const messageContainer = document.getElementById('main-container-message');
+const summarySection = document.getElementById('summarySection');
+const index = document.getElementById('index');
 window.cart = [];
 window.username = ''; // Declarar username como global
 
 document.addEventListener(
   'DOMContentLoaded',
   async () => {
+    document.body.insertAdjacentHTML('beforeend', toast());
+    document.body.insertAdjacentHTML('beforeend', modal());
     try {
       const user = await authRequest.validateSession();
       localStorage.setItem('user', JSON.stringify(user.username));
@@ -27,7 +32,7 @@ document.addEventListener(
 
       window.cart = loadCart(username);
       if (cartArticles) {
-        cartArticles.innerHTML = updateArticles();
+        cartArticles.innerHTML = getTotalItems();
       }
 
       generateAllProducts();
@@ -74,14 +79,37 @@ window.addToCart = function (id) {
   }
 
   localStorage.setItem(`cart_${username}`, JSON.stringify(cart));
-  cartArticles.innerHTML = updateArticles();
+  cartArticles.innerHTML = getTotalItems();
+  showToast('Product added');
 };
 window.removeFromCart = function (id) {
-  const newCart = cart.filter((product) => product.id != id);
-  cart = newCart;
-  localStorage.setItem('cart_' + username, JSON.stringify(cart));
-  loadItems();
-  cartArticles.innerHTML = updateArticles();
+  showConfirm('Do you want to remove this item?', () => {
+    const newCart = cart.filter((product) => product.id != id);
+    cart = newCart;
+    localStorage.setItem('cart_' + username, JSON.stringify(cart));
+    loadItems();
+    messageContainer.hidden = getTotalItems() > 0;
+    cartArticles.innerHTML = getTotalItems();
+    summarySection.hidden = !getTotalItems() > 0;
+    showToast('Item removed', 'secondary');
+    // });
+  });
+};
+window.updateQuantity = function (id, inputElement) {
+  const newQty = parseInt(inputElement.value);
+  // Asegura que sea válido
+  if (isNaN(newQty) || newQty < 1) return;
+
+  const index = cart.findIndex((product) => product.id === id);
+  if (index !== -1) {
+    cart[index].amount = newQty;
+    localStorage.setItem('cart_' + username, JSON.stringify(cart));
+    showToast(`Updated amount`, 'info');
+  }
+  sumTotalItems();
+  cartArticles.innerHTML = getTotalItems();
+
+
 };
 
 // buttons
@@ -90,8 +118,17 @@ btnLogout.addEventListener('click', async () => {
   localStorage.removeItem(`cart_${username}`);
   location.href = './login.html';
 });
+
 cartBtn.addEventListener('click', async () => {
   await loadItems();
+  messageContainer.hidden = getTotalItems() > 0;
+  summarySection.hidden = !getTotalItems() > 0;
+  sumTotalItems();
+});
+index.addEventListener('click', async () => {
+  productContainer.innerHTML = generateAllProducts();
+  messageContainer.hidden = true;
+  summarySection.hidden = true;
 });
 async function loadItems() {
   productContainer.innerHTML = '';
@@ -100,6 +137,7 @@ async function loadItems() {
     productContainer.innerHTML += cartItem(product, amount);
   }
 }
+
 inputSearch.addEventListener('keyup', async (e) => {
   e.preventDefault();
   const name = document.getElementById('inputSearch').value.trim();
@@ -116,8 +154,17 @@ inputSearch.addEventListener('keyup', async (e) => {
     console.log(error);
   }
 });
-function updateArticles() {
+function getTotalItems() {
   const totalArticles = cart.reduce((acc, item) => acc + item.amount, 0);
   cartArticles.hidden = totalArticles === 0;
   return totalArticles;
+}
+
+function sumTotalItems() {
+  const totalAmount = document.getElementById('total-amount');
+
+  // console.log(amount)
+  const totalItems = document.getElementById('total-items');
+  // totalAmount.innerHTML = amount
+  totalItems.innerHTML = getTotalItems();
 }

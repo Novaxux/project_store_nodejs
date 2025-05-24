@@ -9,7 +9,7 @@ export const cartItem = ({ name, price, image, stock, id },amount) => {
               
               <div class="input-group mt-3">
                 <span class="input-group-text">Qty</span>
-                <input type="number" class="form-control" id="qty-${id}" value="${amount}" min="1" max="${stock}">
+                <input type="number" class="form-control" id="cart-qty-${id}"  value="${amount}" min="1" max="${stock}" oninput="updateQuantity(${id}, this)">
               </div>
             </div>
             <div class="card-footer bg-transparent border-top-0">
