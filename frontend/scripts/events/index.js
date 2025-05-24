@@ -235,8 +235,17 @@ btnOrders.addEventListener('click', async () => {
   }
 });
 
-window.showOrderDetails =async function (id) {
-  const orderDetailsContainer  =document.getElementById('orderDetails'+id)
-  const details = await api.getOrderDetails(id);
-  orderDetailsContainer.innerHTML= details.map(orderDetails).join("")
+window.toggleOrderDetails = async function (id) {
+  const details = document.getElementById('orderDetails' + id);
+  const button = document.getElementById(`toggle-details-${id}`);
+
+  const isHidden = button.innerText === 'View Details';
+  isHidden ? showOrderDetails(id) : details.innerHTML = '' 
+  button.innerText = isHidden ? 'Hide Details' : 'View Details';
 };
+
+async function showOrderDetails(id) {
+  const orderDetailsContainer = document.getElementById('orderDetails' + id);
+  const details = await api.getOrderDetails(id);
+  orderDetailsContainer.innerHTML = details.map(orderDetails).join('');
+}

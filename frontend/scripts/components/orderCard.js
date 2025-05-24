@@ -5,7 +5,7 @@ export const orderCard = ({ id, date, total }) => {
       <div class="card shadow-sm mb-4 border-0" id="order-card-${id}">
         <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
           <span>Order #${id}</span>
-          <button class="btn btn-sm btn-outline-light" onclick="showOrderDetails(${id})">
+          <button class="btn btn-sm btn-outline-light" id="toggle-details-${id}" onclick="toggleOrderDetails(${id})">
             View Details
           </button>
         </div>
