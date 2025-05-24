@@ -30,7 +30,7 @@ const createOrder = async (req, res) => {
     }
     await OrderRepository.insertTotal(totalPrice, idOrder, connection);
     await connection.commit();
-    return res.status(201).json({ message: 'Order created', idOrder });
+    return res.status(201).json({ message: 'Order placed successfully'});
   } catch (error) {
     await connection.rollback();
     return res.status(500).json({ message: 'Error creating the order' });

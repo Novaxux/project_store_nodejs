@@ -56,7 +56,35 @@ class ApiCalls {
     return data;
   };
   searchProduct = async (name) => {
-    const response = await fetch(`${this.baseUrl}/products/search?name=${name}`, {
+    const response = await fetch(
+      `${this.baseUrl}/products/search?name=${name}`,
+      {
+        credentials: 'include',
+      }
+    );
+    const data = await response.json();
+    if (!response.ok) {
+      throw data;
+    }
+    return data;
+  };
+  postOrder = async (order) => {
+    const response = await fetch(`${this.baseUrl}/order`, {
+      method: 'POST',
+      credentials: 'include',
+      body: JSON.stringify(order),
+      headers: {
+        'Content-type': 'application/json; charset=UTF-8',
+      },
+    });
+    const data = await response.json();
+    if (!response.ok) {
+      throw data;
+    }
+    return data;
+  };
+  getOrderDetails = async (id) => {
+    const response = await fetch(`${this.baseUrl}/orders/${id}`, {
       credentials: 'include',
     });
     const data = await response.json();
@@ -65,14 +93,9 @@ class ApiCalls {
     }
     return data;
   };
-  postProduct = async (params) => {
-    const response = await fetch(`${this.baseUrl}/products`, {
-      method: 'POST',
+  getOrders = async (id) => {
+    const response = await fetch(`${this.baseUrl}/order`, {
       credentials: 'include',
-      body: JSON.stringify(params),
-      headers: {
-        'Content-type': 'application/json; charset=UTF-8',
-      },
     });
     const data = await response.json();
     if (!response.ok) {

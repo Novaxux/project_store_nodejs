@@ -16,6 +16,7 @@ const messageContainer = document.getElementById('main-container-message');
 const summarySection = document.getElementById('summarySection');
 const index = document.getElementById('index');
 const acceptOrder = document.getElementById('accept-btn');
+const btnOrders = document.getElementById('getOrders')
 
 // Variables globales
 window.cart = [];
@@ -37,8 +38,7 @@ document.addEventListener(
       if (usernameSpan) usernameSpan.innerHTML = username;
 
       window.cart = loadCart(username);
-      updateCartDisplay();
-      summarySection.hidden = true;
+      updateCartDisplay(false);
 
       await generateAllProducts();
     } catch (error) {
@@ -123,7 +123,7 @@ function updateCartDisplay(showSummary = true) {
   const total = getTotalItems();
   cartArticles.hidden = total === 0;
   cartArticles.innerHTML = total;
-  messageContainer.hidden = total > 0;
+  messageContainer.hidden = total > 0 || !showSummary;
   summarySection.hidden = total === 0 || !showSummary;
 }
 
@@ -154,14 +154,23 @@ async function loadItems() {
 }
 
 // Botón para aceptar el pedido
-acceptOrder.addEventListener('click', () => {
+acceptOrder.addEventListener('click', async () => {
   showConfirm('Do you want to proceed with the operation?', sendOrder);
 });
 
 // Enviar pedido
 async function sendOrder() {
-  localStorage.setItem(`cart_${username}`, JSON.stringify([]));
-  document.location.href = 'index.html';
+  try{
+  const data = await api.postOrder(cart)
+  console.log(data)
+  cart =[]
+  saveCart();
+  productContainer.innerHTML=''
+  showToast(data.message, 'info');
+  updateCartDisplay();
+  }catch(error){
+    showToast(error.message, 'danger')
+  }
 }
 
 // Búsqueda de productos
@@ -187,9 +196,15 @@ btnLogout.addEventListener('click', async () => {
 
 // Botón para ver el carrito
 cartBtn.addEventListener('click', async () => {
+  try{
   await loadItems();
   updateCartDisplay();
   await sumTotalItems();
+  }catch{
+    cart=[]
+    saveCart()
+    updateCartDisplay()
+  }
 });
 
 // Botón para volver al índice
@@ -198,3 +213,13 @@ index.addEventListener('click', async () => {
   messageContainer.hidden = true;
   summarySection.hidden = true;
 });
+
+//cargar ordenes
+btnOrders.addEventListener('click', async () => {
+  try{
+    const data = await api.getOrders()
+    console.log(data)
+  }catch(error){
+    showToast(error.message, 'danger')
+  }
+})

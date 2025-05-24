@@ -54,7 +54,7 @@ export class UserRepository {
 
 export class OrderRepository {
   static selectAll = async (idUser) => {
-    const result = await pool.query(`SELECT * FROM orders where id_user = ?`, [
+    const result = await pool.query(`SELECT id, date, total FROM orders where id_user = ?`, [
       idUser,
     ]);
     return result[0];
