@@ -1,7 +1,7 @@
 export const toast = () => {
   return `
       <!-- Toast de mensaje temporal -->
-      <div class="position-fixed top-0 end-0 p-3" style="z-index: 1100;">
+      <div class="position-fixed top-0 end-0 p-3" style="z-index: 1080; margin-top: 4rem; margin-right: 1rem;">
         <div id="toastAlert" class="toast align-items-center text-white bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
           <div class="d-flex">
             <div class="toast-body" id="toastBody">Placeholder message</div>
