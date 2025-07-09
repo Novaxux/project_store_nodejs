@@ -1,6 +1,6 @@
 import express from 'express';
 import morgan from 'morgan';
-import { PORT, IP, CORS_ORIGIN } from './config/config.js';
+import { PORT, CORS_ORIGIN } from './config/config.js';
 import authRoutes from './routes/auth.routes.js';
 import productRoutes from './routes/product.routes.js';
 import orderRoutes from './routes/order.routes.js';
@@ -21,6 +21,6 @@ app.use('/auth', authRoutes);
 app.use('/products', productRoutes);
 app.use('/order', orderRoutes);
 
-app.listen(PORT, IP, () => {
-  console.log(`server on http://${IP}:${PORT}`);
+app.listen(PORT, () => {
+  console.log(`server on http://localhost:${PORT}`);
 });

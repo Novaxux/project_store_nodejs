@@ -30,8 +30,8 @@ const createOrder = async (req, res) => {
     }
     await OrderRepository.insertTotal(totalPrice, idOrder, connection);
     await connection.commit();
-    return res.status(201).json({ message: 'Order placed successfully'});
-  } catch (error) {
+    return res.status(201).json({ message: 'Order placed successfully' });
+  } catch {
     await connection.rollback();
     return res.status(500).json({ message: 'Error creating the order' });
   } finally {
@@ -44,7 +44,7 @@ const getOrders = async (req, res) => {
     const userId = req.session.user.id;
     const orders = await OrderRepository.selectAll(userId);
     return res.json(orders);
-  } catch (error) {
+  } catch {
     return res.status(500).json({ message: 'Error retrieving orders' });
   }
 };
@@ -55,7 +55,7 @@ const getOrderDetails = async (req, res) => {
     const { id: idUser } = req.session.user;
     const products = await OrderProductRepository.select(idUser, idOrder);
     return res.json(products);
-  } catch (error) {
+  } catch {
     return res.status(500).json({ message: 'Error retrieving order details' });
   }
 };
