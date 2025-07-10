@@ -3,7 +3,7 @@ use  project_store;
 create table users(
     id varchar(50) NOT NULL primary key,
     username varchar(30) NOT NULL,
-    password varchar(30) NOT NULL,
+    password varchar(255) NOT NULL,
     role varchar(10) NOT NULL
 );
 
@@ -28,7 +28,7 @@ CREATE TABLE orders (
     price decimal(10,2) NOT NULL,    
     amount int NOT NULL,
     FOREIGN KEY (id_order) REFERENCES orders(id),
-    FOREIGN KEY (id_prodcut) REFERENCES products(id)
+    FOREIGN KEY (id_product) REFERENCES products(id)
 );
 DELIMITER $$
 

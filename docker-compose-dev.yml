@@ -1,12 +1,16 @@
 services:
   ps_app:
-    build: .
+    build: 
+      context: .
+      dockerfile: Dockerfile.dev
     ports:
       - '${PORT}:${PORT}'
     env_file:
       - .env
     depends_on:
       - ps_mysql
+    volumes:
+      - .:/app
       
   ps_mysql:
     image: mysql:8
